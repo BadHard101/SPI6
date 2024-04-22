@@ -5,6 +5,7 @@ import com.example.rschir_buysell.models.products.Product;
 import com.example.rschir_buysell.models.enums.ProductType;
 import com.example.rschir_buysell.services.ClientService;
 import com.example.rschir_buysell.services.products.ShoppingCartService;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -19,11 +20,14 @@ import javax.servlet.http.HttpSession;
 import java.security.Principal;
 import java.util.List;
 
+import io.swagger.annotations.ApiOperation;
 @Controller
 @RequiredArgsConstructor
 public class ClientController {
     private final ClientService clientService;
 
+    //    @ApiOperation(value = "Login endpoint")
+    @Operation(summary = "Login endpoint")
     @GetMapping("/login")
     public String login() {
         return "authorization/login";
@@ -52,17 +56,17 @@ public class ClientController {
     @PostMapping("/registration")
     public String createUser(Client client, Model model) {
         if (!clientService.createClient(client)) {
-            model.addAttribute("errorMessage",
-                    "Пользователь с email: " + client.getEmail() + " уже существует");
+            model.addAttribute("errorMessage", "Пользователь с email: " + client.getEmail() + " уже существует");
             return "authorization/registration";
         }
         return "redirect:/login";
     }
 
+    //    @ApiOperation(value = "Account endpoint")
+    @Operation(summary = "Account endpoint")
     @GetMapping("/account")
     public String account(@AuthenticationPrincipal Client client, Model model) {
         model.addAttribute("user", client);
-        model.addAttribute("orders", clientService.getHistory(client));
         return "user/account";
     }
 
